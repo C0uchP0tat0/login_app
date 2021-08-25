@@ -1,0 +1,18 @@
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<p>Добро пожаловать, {{ user.username }}!</p>
+{% else %}
+<form method="post">
+	{% csrf_token %}
+	<table>
+		{{ form.as_table }}
+	</table>
+	<input type="hidden" name="next" value="{{ next }}">
+	<input type="submit" value="Войти">
+</form>
+{% endif %}
+	<a href="{% url 'signup' %}">Присоединиться</a>
+{% endblock %}
+
