@@ -13,6 +13,14 @@
 	<input type="submit" value="Войти">
 </form>
 {% endif %}
+<table>
 	<a href="{% url 'signup' %}">Присоединиться</a>
+</table>
+<table>
+	<a href="{% url 'registr' %}">Api регистрация</a>
+</table>
+<table>
+	<a href="{% url 'api_accounts' %}">Api спиок зарегистрированных пользователей</a>
+</table>
 {% endblock %}
 
