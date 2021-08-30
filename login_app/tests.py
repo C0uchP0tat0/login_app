@@ -1,35 +1,38 @@
-from django.test import TestCase
+from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
-from .views import accounts
+from rest_framework.test import APITestCase, APIClient
+from rest_framework import status
+from .serializers import UserSerializer
 
-class SigninTest(TestCase):
-    def setUp(self):
-        #Создание пользователя
-        self.user = User.objects.create_user(username='test', password='12345')
-        self.user.save()
-    def tearDown(self):
-        #Очистка тестовой базы
-        self.user.delete()
-    def test_correct(self):
-        user = authenticate(username='test', password='12345')
-        self.assertTrue(user is not None and user.is_authenticated)
-    def test_wrong_username(self):
-        user = authenticate(username='wrong', password='12345')
-        self.assertFalse(user is not None and user.is_authenticated)
-    def test_wrong_pssword(self):
-        user = authenticate(username='test', password='wrong')
-        self.assertFalse(user is not None and user.is_authenticated)
+client = APIClient()
 
-class ViewTest(TestCase):
+class userProfileTestCase(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='test', password='12345')
-        self.user.save()
-        self.client.login(username='test', password='12345')
-    def tearDown(self):
-        self.user.delete()
-    def test_no_tasks(self):
-        response = self.client.get('')
-        self.assertEqual(response.status_code,200)
+        # создайте нового пользователя, отправив запрос к конечной точке djoser
+        self.user1=User.objects.create_user(username='test1', password='test1')
+        self.user2=User.objects.create_user(username='test2', password='test2')
+
+    def test_get_all_accounts(self):
+        # получаем список всех созданых пользователей
+        response = client.get(reverse('accounts'))
+        accounts = User.objects.all()
+        serializer = UserSerializer(accounts, many=True)
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_valid_single_account(self):
+        # проверяем существование пользователя
+        response = client.get(reverse('my', kwargs={'pk': self.user1.pk}))
+        account = User.objects.get(pk=self.user1.pk)
+        serializer = UserSerializer(account)
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_invalid_single_account(self):
+        # проверяем отсутвие пользователя
+        response = client.get(reverse('my', kwargs={'pk': 10}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
 
 

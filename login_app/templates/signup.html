@@ -1,9 +1,0 @@
-{% block content %}
-<h2>Присоединиться</h2>
-<form method="post">
-	{% csrf_token %}
-	{{ form.as_table }}
-	<button type="submit">Присоединиться</button>
-</form>
-<a href="{% url 'accounts' %}">Главная</a>
-{% endblock content %}

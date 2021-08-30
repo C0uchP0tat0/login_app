@@ -28,25 +28,16 @@ class RegistrUserView(CreateAPIView):
             return Response(data) # Возвращаем ошибку
 
 class UserDetailView(RetrieveUpdateDestroyAPIView):
-    queryset=User.objects.all()
+    queryset=User.objects.all() # Получаем список пользователей
     serializer_class=UserSerializer
-    #permission_classes=[IsOwnerProfileOrReadOnly,IsAuthenticated]
 
 @api_view(['GET'])
 def api_accounts(request):
     if request.method == 'GET':
-        accounts = User.objects.all()
+        accounts = User.objects.all() # Получаем список зарегистрированных пользователей
         serializer = UserSerializer(accounts, many=True)
         return Response(serializer.data)
 
+def home(request):
+    return render(request, 'home.html')
 
-@login_required(login_url='/accounts/login/')
-def accounts(request):
-    users = User.objects.all()
-    context = {'users': users,}
-    return render(request, 'accounts.html', context)
-
-class SignUpView(generic.CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'signup.html'
