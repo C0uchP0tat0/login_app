@@ -6,11 +6,12 @@ from .serializers import UserSerializer
 
 client = APIClient()
 
-class userProfileTestCase(APITestCase):
+
+class UserProfileTestCase(APITestCase):
     def setUp(self):
         # создайте нового пользователя, отправив запрос к конечной точке djoser
-        self.user1=User.objects.create_user(username='test1', password='test1')
-        self.user2=User.objects.create_user(username='test2', password='test2')
+        self.user1 = User.objects.create_user(username='test1', password='test1')
+        self.user2 = User.objects.create_user(username='test2', password='test2')
 
     def test_get_all_accounts(self):
         # получаем список всех созданых пользователей
@@ -33,6 +34,13 @@ class userProfileTestCase(APITestCase):
         response = client.get(reverse('my', kwargs={'pk': 10}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_register(self):
+        data = {
+            'username': 'test_user',
+            'password': 'qwerty123',
+            'password2': 'qwerty123',
+        }
+        response = client.post(reverse('signup'), data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-
-
+# TODO написать или актуализировать тесты для списка пользователей и одного пользователя
