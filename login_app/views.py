@@ -19,7 +19,7 @@ class RegisterUserView(CreateAPIView):
         if serializer.is_valid():
             # TODO возвращать пользователя
             serializer.save()  # Сохраняем нового пользователя
-            return Response(status=status.HTTP_200_OK)  # Возвращаем что всё в порядке
+            return Response(serializer.data['username'], status=status.HTTP_200_OK)  # Возвращаем имя успешно созданого пользователя
         else: 
             data = serializer.errors  # Присваиваем data ошибку
             return Response(data, status=status.HTTP_400_BAD_REQUEST)  # Возвращаем ошибку
