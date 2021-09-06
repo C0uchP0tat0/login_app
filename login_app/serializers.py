@@ -1,12 +1,22 @@
 from rest_framework import serializers 
 from django.contrib.auth.models import User
+from wallet.models import Wallet
+
+
+class WalletSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Wallet
+        fields = ['id', 'balance', 'user']
 
 
 class UserSerializer(serializers.ModelSerializer):
+    wallet = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = ['id', 'username', 'email', 'wallet']
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
