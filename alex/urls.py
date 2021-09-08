@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from login_app.views import RegisterUserView, UserViewSet
+from wallet.views import UserWallet
 
 router = DefaultRouter()
 
@@ -15,4 +16,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/signup/', RegisterUserView.as_view(), name='signup'),
     path('api/v2/', include(router.urls)),
+    path('api/wallet/<int:pk>/', UserWallet.as_view(), name='wallet'),
 ]
