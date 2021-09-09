@@ -10,6 +10,8 @@ from .models import Wallet
 
 
 class UserWallet(APIView):
+    queryset = Wallet.objects.all()  # Добавляем в queryset
+    serializer_class = WalletSerializer
 
     def get_object(self, pk): # получаем кошелёк пользователя по id кошелька
         try:
@@ -22,7 +24,7 @@ class UserWallet(APIView):
         serializer = WalletSerializer(user_wallet)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None): # пополняем выбранный кошелёк
+    def put(self, request, pk, format=None): # пополняем кошелёк данного пользователя
         user_wallet = self.get_object(pk)
         serializer = WalletSerializer(user_wallet, data=request.data)
         if serializer.is_valid():
