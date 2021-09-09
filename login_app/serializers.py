@@ -3,22 +3,29 @@ from django.contrib.auth.models import User
 from wallet.models import Wallet
 
 
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.save()
+        return instance
+
 class WalletSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     balance = serializers.DecimalField(max_digits=7, decimal_places=2)
 
     class Meta:
         model = Wallet
-        fields = ['id', 'balance', 'user']
+        fields = ['user', 'balance']
 
-
-class UserSerializer(serializers.ModelSerializer):
-    wallet = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'wallet']
-
+    def update(self, instance, validated_data):
+        instance.balance = validated_data.get('balance', instance.balance)
+        instance.save()
+        return instance
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField()
